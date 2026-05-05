@@ -125,12 +125,50 @@ describe('擦边引流文案样本', () => {
   );
 });
 
+// ── 套件 6b："全国安排"机器人网络 ─────────────────────────────
+describe('"全国安排"机器人网络（用户名=随机字母+数字，昵称=字母部分首字母大写）', () => {
+  const bots = [
+    { displayName:'Gkwab',    username:'gkwab52866',    text:'静赏四季风光' },
+    { displayName:'Wdkepf',   username:'wdkepf54615',   text:'笑对世事无常' },
+    { displayName:'Lmcad',    username:'lmcad235315',   text:'谁言寸草心报得春晖' },
+    { displayName:'Cbxfa',    username:'cbxfa118843',   text:'相逢自有温柔' },
+    { displayName:'Npscqhjd', username:'npscqhjd59985', text:'相逢何必曾相识' },
+    { displayName:'Imakhpf',  username:'imakhpf40401',  text:'春蚕到死丝方尽意浓' },
+    { displayName:'Ynlfeu',   username:'ynlfeu34812',   text:'知己已温暖流年' },
+    { displayName:'Ghsyfkx',  username:'ghsyfkx14682',  text:'宁静安放余生' },
+    { displayName:'Eajbocp',  username:'eajbocp81512',  text:'洛阳亲友如相问报平安' },
+    { displayName:'Ipbad',    username:'ipbad135624',   text:'莫愁前路无知己识君者众' },
+    { displayName:'Vlfahi',   username:'vlfahi56518',   text:'良友同行共白头' },
+    { displayName:'Cpgbfan',  username:'cpgbfan74930',  text:'骨肉相连爱长久' },
+    { displayName:'Abcsdqzj', username:'abcsdqzj40244', text:'知交相惜度春秋' },
+    { displayName:'Hsvtpxia', username:'hsvtpxia81284', text:'情投意合伴朝暮' },
+  ];
+  bots.forEach((s) =>
+    expect(`机器人命中 @${s.username}`, shouldFilter(scoreComment(s)), true)
+  );
+
+  // 反误判：用户名有数字后缀但昵称不是字母部分
+  expect('反误判: 昵称含中文', shouldFilter(scoreComment({ displayName:'王五', username:'wangwu2024', text:'分享一个观点' })), false);
+  expect('反误判: 昵称含空格', shouldFilter(scoreComment({ displayName:'Frank Wang', username:'frankwang2024', text:'hello world' })), false);
+});
+
+// ── 套件 6c：单身哥哥正则修复（含"的"字）──────────────────────
+describe('单身哥哥正则修复', () => {
+  expect('有没有单身的哥哥（含"的"）', shouldFilter(scoreComment({ displayName:'小甜豆', username:'HayleyHami88736', text:'有没有单身的哥哥🤗😵yM9' })), true);
+  expect('有没有单身哥哥（不含"的"，原有）', shouldFilter(scoreComment({ displayName:'欣晴🌸🌸', username:'DavidHanse69498', text:'有没有单身哥哥😘🥺💝619' })), true);
+  expect('有没有单身的弟弟', shouldFilter(scoreComment({ displayName:'x', username:'x', text:'有没有单身的弟弟' })), true);
+  expect('有没有单身男大', shouldFilter(scoreComment({ displayName:'x', username:'x', text:'有没有单身男大' })), true);
+});
+
 // ── 套件 6：仿冒检测 ─────────────────────────────────────────
 describe('仿冒检测', () => {
   expect('硅谷居士仿冒被拦', shouldFilter(scoreComment({ displayName:'硅硲居土', username:'CharleneMayo31', text:'我的分析结果' })), true);
   expect('硅谷居士真实账号放行', shouldFilter(scoreComment({ displayName:'硅谷居士', username:'svscholar', text:'今天发了一篇文章' })), false);
   expect('陶瑞仿冒被拦', shouldFilter(scoreComment({ displayName:'陶瑞', username:'fakeuser123', text:'我的投资策略' })), true);
   expect('陶瑞真实账号放行', shouldFilter(scoreComment({ displayName:'陶瑞', username:'taoray', text:'分享一下最新想法' })), false);
+  expect('Tigris仿冒被拦（Tigirs拼写）', shouldFilter(scoreComment({ displayName:'Tigirs 会讲课老帅是好教授', username:'fakeuser123', text:'' })), true);
+  expect('Tigris仿冒被拦（Tigris拼写）', shouldFilter(scoreComment({ displayName:'Tigris 会讲课老帅是好教授', username:'fakeuser456', text:'' })), true);
+  expect('Tigris真实账号放行', shouldFilter(scoreComment({ displayName:'Tigris 会讲课老帅是好教授', username:'tig88411109', text:'今天讲一个新话题' })), false);
 });
 
 // ── 汇总 ──────────────────────────────────────────────────────

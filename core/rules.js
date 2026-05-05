@@ -34,7 +34,7 @@ const RULES = {
 		{ re: /来个?真人认识一下/, label: '真人认识模板' },
 		{ re: /有[没]?有?弟弟想认识/, label: '弟弟认识模板' },
 		{ re: /找个?(长期|固定)(搭子|伴侣)/, label: '长期搭子模板' },
-		{ re: /有没有单身(哥哥|男生|男友)/, label: '单身哥哥模板' },
+		{ re: /有没有单身的?(哥哥|弟弟|男生|男大|男友)/, label: '单身哥哥模板' },
 		{ re: /主人抱抱/, label: '主人模板' },
 		{ re: /主人快来领我/, label: '主人模板' },
 		{ re: /dd个?线下的?(哥哥|男生)/, label: '线下dd模板' },
@@ -109,6 +109,7 @@ const RULES = {
 			label: '硅谷居士仿冒',
 		},
 		{ pattern: /陶.?瑞/, legitimateUsername: 'taoray', label: '陶瑞仿冒' },
+		{ pattern: /Tig[ir]+s/i, legitimateUsername: 'tig88411109', label: 'Tigris仿冒' },
 	],
 };
 
@@ -133,6 +134,16 @@ function scoreComment({ displayName, username, text }) {
 	for (const kw of RULES.forcedKeywords) {
 		if (haystack.includes(kw.toLowerCase())) {
 			return { matched: true, reasons: [`关键词: ${kw}`] };
+		}
+	}
+
+	// 机器人网络联合检测：用户名=随机字母(4-10)+数字(4-6) 且 昵称==字母部分(首字母大写)
+	// 典型案例：@gkwab52866 / Gkwab、@wdkepf54615 / Wdkepf（"全国安排"机器人群）
+	const botNetworkMatch = nu.match(/^([a-z]{4,10})\d{4,6}$/i);
+	if (botNetworkMatch) {
+		const letters = botNetworkMatch[1].toLowerCase();
+		if (nd.toLowerCase() === letters && /^[a-z]+$/i.test(nd)) {
+			return { matched: true, reasons: ['机器人网络: 用户名/昵称随机字符串'] };
 		}
 	}
 
