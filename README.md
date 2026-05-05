@@ -34,6 +34,22 @@ A Chrome extension that automatically detects and collapses spam comments in X (
 | Impersonation | 硅谷居士/@svscholar, 陶瑞/@taoray (customizable) |
 | Hard keywords | onlyfans, fansly, t.me, 约炮, 破处, 母狗, 骚妇, etc. |
 
+## Installation
+
+### Method 1: Chrome Web Store (Recommended)
+1. Visit the [Chrome Web Store](https://chromewebstore.google.com/detail/x-spam-comment-filter/...) (link to be added).
+2. Click **Add to Chrome**.
+
+### Method 2: Developer Mode (For users in Mainland China)
+If you cannot access the Chrome Web Store:
+1. Download the [source code](https://github.com/frank-wang/x-comment-filter-extension/archive/refs/heads/main.zip) or clone this repository.
+2. Unzip the file if downloaded as a ZIP.
+3. Open Chrome and navigate to `chrome://extensions/`.
+4. Enable **Developer mode** (toggle in the top right).
+5. Click **Load unpacked** and select the extension folder.
+
+![Installation Guide](./how-to-install-locally.png)
+
 ## File Structure
 
 ```
@@ -97,6 +113,22 @@ Chrome 插件，自动识别并折叠 X（Twitter）评论区中的黄推引流�
 | 割韭菜 | 投资策略、内部消息、喊单、稳赚不赔、代操盘等 |
 | 仿冒账号 | 硅谷居士/@svscholar、陶瑞/@taoray（可自定义添加）|
 | 强制关键词 | onlyfans、fansly、t.me、约炮、破处、母狗、骚妇等 |
+
+## 安装方法
+
+### 方法一：Chrome 网上应用店（推荐）
+1. 访问 [Chrome Web Store](https://chromewebstore.google.com/detail/x-spam-comment-filter/...) (链接待更新)。
+2. 点击 **添加至 Chrome**。
+
+### 方法二：开发者模式（适合中国大陆用户）
+如果你无法访问 Chrome 应用店：
+1. 下载 [源代码 ZIP 包](https://github.com/frank-wang/x-comment-filter-extension/archive/refs/heads/main.zip) 或克隆本仓库。
+2. 如果是 ZIP 包，请先解压。
+3. 打开 Chrome 浏览器，在地址栏输入 `chrome://extensions/` 并回车。
+4. 在右上角开启 **开发者模式**。
+5. 点击左上角的 **加载已解压的扩展程序**，选择本项目的根目录。
+
+![安装指南](./how-to-install-locally.png)
 
 ## 文件结构
 
