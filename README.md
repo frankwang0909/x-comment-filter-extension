@@ -40,7 +40,7 @@ A Chrome extension that automatically detects and collapses spam comments in X (
 1. Visit the [Chrome Web Store](https://chromewebstore.google.com/detail/x-spam-comment-filter/...) (link to be added).
 2. Click **Add to Chrome**.
 
-### Method 2: Developer Mode (For users in Mainland China)
+### Method 2: Developer Mode (For users without access to the Chrome Web Store)
 If you cannot access the Chrome Web Store:
 1. Download the [source code](https://github.com/frank-wang/x-comment-filter-extension/archive/refs/heads/main.zip) or clone this repository.
 2. Unzip the file if downloaded as a ZIP.
@@ -120,8 +120,8 @@ Chrome 插件，自动识别并折叠 X（Twitter）评论区中的黄推引流�
 1. 访问 [Chrome Web Store](https://chromewebstore.google.com/detail/x-spam-comment-filter/...) (链接待更新)。
 2. 点击 **添加至 Chrome**。
 
-### 方法二：开发者模式（适合中国大陆用户）
-如果你无法访问 Chrome 应用店：
+### 方法二：开发者模式（无法访问 Chrome 应用商店的用户）
+如果你无法访问 Chrome 应用商店：
 1. 下载 [源代码 ZIP 包](https://github.com/frank-wang/x-comment-filter-extension/archive/refs/heads/main.zip) 或克隆本仓库。
 2. 如果是 ZIP 包，请先解压。
 3. 打开 Chrome 浏览器，在地址栏输入 `chrome://extensions/` 并回车。
