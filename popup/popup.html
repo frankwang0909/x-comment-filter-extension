@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>X 垃圾评论过滤器</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 260px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #000;
+      color: #e7e9ea;
+      padding: 16px;
+    }
+    h1 { font-size: 15px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    label { font-size: 13px; color: #71767b; }
+    /* toggle switch */
+    .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; inset: 0;
+      background: #333; border-radius: 22px; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .slider:before {
+      content: ''; position: absolute;
+      width: 16px; height: 16px; border-radius: 50%;
+      left: 3px; bottom: 3px;
+      background: #fff; transition: transform 0.2s;
+    }
+    input:checked + .slider { background: #1d9bf0; }
+    input:checked + .slider:before { transform: translateX(18px); }
+
+    select {
+      width: 100%; padding: 6px 10px;
+      background: #111; color: #e7e9ea;
+      border: 1px solid #333; border-radius: 6px;
+      font-size: 13px; margin-bottom: 14px;
+    }
+    .stats {
+      background: #111; border-radius: 8px;
+      padding: 10px 12px; font-size: 12px; color: #71767b;
+      margin-bottom: 14px;
+    }
+    .stats span { color: #1d9bf0; font-weight: 600; }
+    .stats-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .action-btn {
+      width: 100%;
+      padding: 10px 12px;
+      border: 0;
+      border-radius: 8px;
+      background: #1d9bf0;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    .action-btn:disabled {
+      opacity: 0.55;
+      cursor: default;
+    }
+    .action-status {
+      min-height: 18px;
+      font-size: 12px;
+      color: #71767b;
+      margin-bottom: 12px;
+    }
+    a.options-link {
+      display: block; text-align: center;
+      font-size: 12px; color: #71767b;
+      text-decoration: none; padding-top: 4px;
+    }
+    a.options-link:hover { color: #1d9bf0; }
+  </style>
+</head>
+<body>
+  <h1>🚫 X 垃圾评论过滤器</h1>
+
+  <div class="toggle-row">
+    <label for="enabled">启用过滤</label>
+    <label class="switch">
+      <input type="checkbox" id="enabled">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="toggle-row">
+    <label for="hide-mode">直接隐藏（不显示占位条）</label>
+    <label class="switch">
+      <input type="checkbox" id="hide-mode">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <label for="level">过滤强度</label>
+  <select id="level">
+    <option value="loose">宽松（只过滤明显黄推）</option>
+    <option value="normal" selected>标准（推荐）</option>
+    <option value="strict">严格（更激进）</option>
+  </select>
+
+  <div class="stats">
+    <div class="stats-row">今日折叠 <span id="stat-today">0</span> 条</div>
+    <div class="stats-row">累计折叠 <span id="stat-total">0</span> 条</div>
+    <div class="stats-row">手动展开 <span id="stat-restored">0</span> 条</div>
+  </div>
+
+  <button id="block-all" class="action-btn">一键隐藏并拉黑本页已拦截</button>
+  <div id="action-status" class="action-status"></div>
+
+  <a class="options-link" href="#" id="open-options">更多设置（白名单 / 黑名单）→</a>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>X 黄推过滤器 — 设置</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      max-width: 560px; margin: 40px auto;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #000; color: #e7e9ea; padding: 0 20px 60px;
+    }
+    h1 { font-size: 20px; margin-bottom: 24px; }
+    h2 { font-size: 15px; color: #71767b; margin: 24px 0 10px; }
+    label { display: flex; align-items: center; gap: 10px; font-size: 14px; margin-bottom: 10px; cursor: pointer; }
+    select, input[type=text] {
+      background: #111; color: #e7e9ea;
+      border: 1px solid #333; border-radius: 6px;
+      padding: 6px 10px; font-size: 13px;
+    }
+    select { width: 100%; margin-bottom: 6px; }
+    .list-area { display: flex; flex-direction: column; gap: 8px; }
+    .list-input-row { display: flex; gap: 8px; }
+    .list-input-row input { flex: 1; }
+    button {
+      padding: 6px 14px; border-radius: 6px; border: none; cursor: pointer;
+      font-size: 13px;
+    }
+    .btn-add { background: #1d9bf0; color: #fff; }
+    .btn-add:hover { background: #1a8cd8; }
+    .list-items { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .list-tag {
+      display: flex; align-items: center; gap: 4px;
+      background: #1d3a50; border-radius: 9999px;
+      padding: 3px 10px; font-size: 12px; color: #1d9bf0;
+    }
+    .list-tag button {
+      background: none; border: none; color: #71767b;
+      font-size: 14px; padding: 0; cursor: pointer; line-height: 1;
+    }
+    .list-tag button:hover { color: #e7e9ea; }
+    .save-btn {
+      margin-top: 24px; background: #1d9bf0; color: #fff;
+      padding: 10px 28px; font-size: 14px; border-radius: 9999px;
+    }
+    .save-btn:hover { background: #1a8cd8; }
+    .saved-msg { margin-left: 12px; font-size: 13px; color: #71767b; display: none; }
+    /* toggle */
+    .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; inset: 0; background: #333; border-radius: 22px; cursor: pointer; transition: background 0.2s; }
+    .slider:before { content: ''; position: absolute; width: 16px; height: 16px; border-radius: 50%; left: 3px; bottom: 3px; background: #fff; transition: transform 0.2s; }
+    input:checked + .slider { background: #1d9bf0; }
+    input:checked + .slider:before { transform: translateX(18px); }
+  </style>
+</head>
+<body>
+  <h1>🚫 X 垃圾评论过滤器 — 设置</h1>
+
+  <h2>基本设置</h2>
+  <label>
+    <label class="switch"><input type="checkbox" id="enabled"><span class="slider"></span></label>
+    启用插件
+  </label>
+  <label>
+    <label class="switch"><input type="checkbox" id="showReason"><span class="slider"></span></label>
+    显示命中原因
+  </label>
+
+  <h2>过滤强度</h2>
+  <select id="level">
+    <option value="loose">宽松（阈值 8，仅过滤明显黄推）</option>
+    <option value="normal">标准（阈值 5，推荐）</option>
+    <option value="strict">严格（阈值 3，更激进）</option>
+  </select>
+
+  <h2>白名单（不折叠）</h2>
+  <div class="list-area">
+    <div class="list-input-row">
+      <input type="text" id="whitelist-input" placeholder="@用户名（不含@）">
+      <button class="btn-add" id="whitelist-add">添加</button>
+    </div>
+    <div class="list-items" id="whitelist-items"></div>
+  </div>
+
+  <h2>黑名单（强制折叠）</h2>
+  <div class="list-area">
+    <div class="list-input-row">
+      <input type="text" id="blacklist-input" placeholder="@用户名（不含@）">
+      <button class="btn-add" id="blacklist-add">添加</button>
+    </div>
+    <div class="list-items" id="blacklist-items"></div>
+  </div>
+
+  <h2>自定义关键词（命中即屏蔽）</h2>
+  <p style="font-size: 12px; color: #71767b; margin-bottom: 8px;">昵称、用户名或评论内容包含以下词语时自动屏蔽</p>
+  <div class="list-area">
+    <div class="list-input-row">
+      <input type="text" id="custom-keyword-input" placeholder="输入关键词，如：稳赚不赔">
+      <button class="btn-add" id="custom-keyword-add">添加</button>
+    </div>
+    <div class="list-items" id="custom-keyword-items"></div>
+  </div>
+
+  <h2>仿冒保护</h2>
+  <p style="font-size: 12px; color: #71767b; margin-bottom: 8px;">昵称包含指定名称但用户名不符时自动屏蔽</p>
+  <div class="list-area">
+    <div class="list-input-row" style="flex-wrap: wrap; gap: 6px;">
+      <input type="text" id="impersonation-name-input" placeholder="保护的昵称（如：硅谷居士）" style="flex:1; min-width: 140px;">
+      <input type="text" id="impersonation-user-input" placeholder="真实用户名（不含@）" style="flex:1; min-width: 120px;">
+      <button class="btn-add" id="impersonation-add">添加</button>
+    </div>
+    <div class="list-items" id="impersonation-items"></div>
+  </div>
+
+  <div style="margin-top: 28px; display: flex; align-items: center;">
+    <button class="save-btn" id="save">保存设置</button>
+    <span class="saved-msg" id="saved-msg">已保存 ✓</span>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

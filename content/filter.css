@@ -1,0 +1,78 @@
+/* ============================================================
+   X 黄推过滤器 — 注入样式
+   ============================================================ */
+
+/* 折叠的原始 article */
+.xf-collapsed {
+  display: none !important;
+}
+
+/* 占位条 */
+.xf-placeholder {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgb(47, 51, 54);
+  font-size: 13px;
+  color: rgb(113, 118, 123);
+  background: transparent;
+  flex-wrap: wrap;
+}
+
+.xf-label {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.xf-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.xf-btn {
+  padding: 3px 10px;
+  border-radius: 9999px;
+  border: 1px solid rgb(83, 100, 113);
+  background: transparent;
+  color: rgb(113, 118, 123);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.xf-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgb(231, 233, 234);
+}
+
+.xf-btn.xf-block:hover {
+  border-color: rgb(244, 33, 46);
+  color: rgb(244, 33, 46);
+}
+
+/* Toast 提示 */
+.xf-toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgb(29, 155, 240);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 9999px;
+  font-size: 14px;
+  z-index: 99999;
+  pointer-events: none;
+  animation: xf-fade 3s forwards;
+}
+
+@keyframes xf-fade {
+  0%   { opacity: 1; }
+  70%  { opacity: 1; }
+  100% { opacity: 0; }
+}
