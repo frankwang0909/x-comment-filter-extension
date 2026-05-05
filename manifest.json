@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "X 垃圾评论过滤器",
+  "name": "X Spam Comment Filter",
   "version": "0.2.0",
-  "description": "自动识别并折叠 X 评论区中的疑似黄推、引流及割韭菜账号回复",
+  "description": "Automatically detect and collapse spam comments on X — adult bots, scam accounts, and impersonators.",
   "permissions": ["storage", "activeTab", "scripting"],
   "host_permissions": ["https://x.com/*", "https://twitter.com/*"],
   "content_scripts": [
@@ -22,7 +22,7 @@
   ],
   "action": {
     "default_popup": "popup/popup.html",
-    "default_title": "X 垃圾评论过滤器"
+    "default_title": "X Spam Comment Filter"
   },
   "options_page": "options/options.html",
   "icons": {
