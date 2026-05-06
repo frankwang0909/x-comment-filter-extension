@@ -114,11 +114,16 @@ const Filter = (() => {
   }
 
   function bindPlaceholderEvents(placeholder, article, info) {
-    placeholder.querySelector('.xf-expand').addEventListener('click', () => {
-      article.classList.remove(COLLAPSED_CLASS);
-      placeholder.remove();
-      unmarkHiddenUsername(info.username);
-      Storage.incrementStat('restored');
+    placeholder.querySelector('.xf-expand').addEventListener('click', (e) => {
+      const btn = e.currentTarget;
+      const isCollapsed = article.classList.contains(COLLAPSED_CLASS);
+      if (isCollapsed) {
+        article.classList.remove(COLLAPSED_CLASS);
+        btn.textContent = '折叠';
+      } else {
+        article.classList.add(COLLAPSED_CLASS);
+        btn.textContent = '展开';
+      }
     });
 
     placeholder.querySelector('.xf-whitelist').addEventListener('click', () => {
