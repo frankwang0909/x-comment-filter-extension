@@ -142,16 +142,6 @@ function scoreComment({ displayName, username, text }) {
 		}
 	}
 
-	// 机器人网络联合检测：用户名=随机字母(4-10)+数字(4-6) 且 昵称==字母部分(首字母大写)
-	// 典型案例：@gkwab52866 / Gkwab、@wdkepf54615 / Wdkepf（"全国安排"机器人群）
-	const botNetworkMatch = nu.match(/^([a-z]{4,10})\d{4,6}$/i);
-	if (botNetworkMatch) {
-		const letters = botNetworkMatch[1].toLowerCase();
-		if (nd.toLowerCase() === letters && /^[a-z]+$/i.test(nd)) {
-			return { matched: true, reasons: ['机器人网络: 用户名/昵称随机字符串'] };
-		}
-	}
-
 	// 仿冒检测
 	for (const rule of RULES.impersonationRules) {
 		const nameMatches = rule.pattern
