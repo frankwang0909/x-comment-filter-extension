@@ -130,6 +130,11 @@ function scoreComment({ displayName, username, text }) {
 	const nt = normalizeForMatch(text);
 	const haystack = `${nd} ${nu} ${nt}`.toLowerCase();
 
+	// 仿冒规则保护的合法账号直接放行，不经过任何检测
+	if (RULES.impersonationRules.some(r => nu === r.legitimateUsername)) {
+		return { matched: false, reasons: [] };
+	}
+
 	// 强制关键词
 	for (const kw of RULES.forcedKeywords) {
 		if (haystack.includes(kw.toLowerCase())) {

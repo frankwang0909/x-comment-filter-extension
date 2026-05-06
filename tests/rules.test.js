@@ -169,6 +169,7 @@ describe('仿冒检测', () => {
   expect('Tigris仿冒被拦（Tigirs拼写）', shouldFilter(scoreComment({ displayName:'Tigirs 会讲课老帅是好教授', username:'fakeuser123', text:'' })), true);
   expect('Tigris仿冒被拦（Tigris拼写）', shouldFilter(scoreComment({ displayName:'Tigris 会讲课老帅是好教授', username:'fakeuser456', text:'' })), true);
   expect('Tigris真实账号放行', shouldFilter(scoreComment({ displayName:'Tigris 会讲课老帅是好教授', username:'tig88411109', text:'今天讲一个新话题' })), false);
+  expect('Tigris真实账号放行（含spam文本也放行）', shouldFilter(scoreComment({ displayName:'Tigris 会讲课教授是好老师', username:'tig88411109', text:'有没有单身的哥哥' })), false);
 });
 
 // ── 汇总 ──────────────────────────────────────────────────────
