@@ -1,5 +1,23 @@
 const $ = (id) => document.getElementById(id);
 
+// 同形字映射：仿冒者常用相近字替换
+const HOMOGLYPH_MAP = {
+  '人': '[人入]',
+  '士': '[士土]',
+  '谷': '[谷各]',
+  '硅': '[硅硲]',
+  '己': '[己已巳]',
+  '大': '[大太]',
+};
+
+// 将普通昵称转为"任意顺序 + 同形字"正则
+function buildImpersonationPattern(name) {
+  return [...name].map(ch => {
+    const cls = HOMOGLYPH_MAP[ch] || ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return `(?=.*${cls})`;
+  }).join('');
+}
+
 let whitelist = [];
 let blacklist = [];
 let customKeywords = [];
@@ -95,11 +113,13 @@ $('impersonation-add').addEventListener('click', () => {
   const displayName = $('impersonation-name-input').value.trim();
   const legitimateUsername = $('impersonation-user-input').value.trim().replace(/^@/, '').toLowerCase();
   if (!displayName || !legitimateUsername) return;
+
   const exists = customImpersonation.some(
     (r) => r.displayName === displayName && r.legitimateUsername === legitimateUsername
   );
   if (!exists) {
-    customImpersonation.push({ displayName, legitimateUsername, matchType: 'contains' });
+    const pattern = buildImpersonationPattern(displayName);
+    customImpersonation.push({ displayName, pattern, legitimateUsername, matchType: 'regex' });
     renderImpersonation(customImpersonation);
     $('impersonation-name-input').value = '';
     $('impersonation-user-input').value = '';

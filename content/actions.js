@@ -95,7 +95,7 @@ const Actions = (() => {
       fallbackReasons: {},
     };
 
-    // 串行请求：X 的 blocks/create 接口会拒绝同一 session 的并发重复请求
+    // 串行请求，每次间隔 1.5s：避免触发 X 的频率限制
     for (const { username, placeholder, article } of targets) {
       const result = await block(null, username, { silent: true });
       if (result.remoteBlocked) summary.remoteBlocked += 1;
@@ -107,6 +107,7 @@ const Actions = (() => {
       placeholder?.remove();
       if (article?.isConnected) article.remove();
       Filter.unmarkHiddenUsername(username);
+      await new Promise(r => setTimeout(r, 1500));
     }
 
     Filter.clearHiddenUsernames();

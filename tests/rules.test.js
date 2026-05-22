@@ -45,9 +45,13 @@ describe('强制命中关键词', () => {
     { displayName:'x', username:'x', text:'私信看图，懂的来' },
     { displayName:'x', username:'x', text:'加我t.me/xxxchannel' },
     { displayName:'x', username:'x', text:'约炮找谁' },
+    { displayName:'x', username:'x', text:'找炮友点主页' },
+    { displayName:'x', username:'x', text:'找炮友 点 主 页' },
     { displayName:'x', username:'x', text:'破处找我' },
     { displayName:'静雅母狗找主人约固炮', username:'x', text:'' },
     { displayName:'x', username:'x', text:'骚妇一枚' },
+    { displayName:'x', username:'x', text:'免费线下看主页' },
+    { displayName:'同城上门资源', username:'x', text:'' },
   ].forEach((s) => expect(`强制命中: "${s.displayName||s.text}"`, scoreComment(s).matched, true));
 });
 
@@ -91,6 +95,10 @@ describe('零宽字符绕过样本', () => {
     { displayName:'张安然❤️蹲一个弟弟', username:'gilliansmi83176', text:'☀5q🐦' },
     { displayName:'🍑 全推唯一真实约见 💌 附近资源自取', username:'mlowler38556', text:'🤩👏 🫶' },
     { displayName:'💎 全网唯一约炮社区 ☔️ 点我头像选人', username:'lorrianes14939', text:'🔥💞💌 💞' },
+    { displayName:'找炮友 点主页', username:'spamprofile123', text:'看看主页' },
+    { displayName:'找 炮 友 点主页', username:'spacedspam123', text:'看看主页' },
+    { displayName:'点 主 页 找人', username:'splitprofile123', text:'看看主页' },
+    { displayName:'小圆同城无偿', username:'localspam123', text:'看看主页' },
   ];
 
   expect('标准化移除零宽字符', normalizeForMatch('有没​有').includes('​'), false);
@@ -140,9 +148,51 @@ describe('仿冒检测', () => {
   expect('陶瑞仿冒被拦', shouldFilter(scoreComment({ displayName:'陶瑞', username:'fakeuser123', text:'我的投资策略' })), true);
   expect('陶瑞真实账号放行', shouldFilter(scoreComment({ displayName:'陶瑞', username:'taoray', text:'分享一下最新想法' })), false);
   expect('Tigris仿冒被拦（Tigirs拼写）', shouldFilter(scoreComment({ displayName:'Tigirs 会讲课老帅是好教授', username:'fakeuser123', text:'' })), true);
+  expect('Tigris仿冒被拦（实际账号样本）', shouldFilter(scoreComment({ displayName:'Tigirs 会讲课老帅是好教授', username:'kiruanskaua', text:'' })), true);
+  expect('Tigris仿冒被拦（同形字 i）', shouldFilter(scoreComment({ displayName:'Tіgіrs 会讲课老帅是好教授', username:'lookalike123', text:'' })), true);
   expect('Tigris仿冒被拦（Tigris拼写）', shouldFilter(scoreComment({ displayName:'Tigris 会讲课老帅是好教授', username:'fakeuser456', text:'' })), true);
   expect('Tigris真实账号放行', shouldFilter(scoreComment({ displayName:'Tigris 会讲课老帅是好教授', username:'tig88411109', text:'今天讲一个新话题' })), false);
   expect('Tigris真实账号放行（含spam文本也放行）', shouldFilter(scoreComment({ displayName:'Tigris 会讲课教授是好老师', username:'tig88411109', text:'有没有单身的哥哥' })), false);
+});
+
+// ── 套件 7：自定义仿冒规则（自动生成正则）────────────────────
+describe('自定义仿冒规则匹配（用户输入普通文字，自动处理）', () => {
+  // 同形字映射（与 options.js 保持一致）
+  const HOMOGLYPH_MAP = {
+    '人': '[人入]', '士': '[士土]', '谷': '[谷各]',
+    '硅': '[硅硲]', '己': '[己已巳]', '大': '[大太]',
+  };
+  function buildImpersonationPattern(name) {
+    return [...name].map(ch => {
+      const cls = HOMOGLYPH_MAP[ch] || ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      return `(?=.*${cls})`;
+    }).join('');
+  }
+
+  // 复刻 filter.js 中的匹配逻辑，脱离浏览器 API 独立可测
+  function matchesCustomImpersonation(rule, displayName, username) {
+    let nameMatches = false;
+    if (rule.matchType === 'regex') {
+      try { nameMatches = new RegExp(rule.pattern || rule.displayName).test(displayName); } catch (_) { /* 跳过 */ }
+    } else {
+      nameMatches = displayName.includes(rule.displayName);
+    }
+    return nameMatches && username !== rule.legitimateUsername;
+  }
+
+  // 模拟用户在设置页输入"美股仙人"后生成的规则对象
+  const rule = {
+    displayName: '美股仙人',
+    pattern: buildImpersonationPattern('美股仙人'),
+    legitimateUsername: 'hanking66',
+    matchType: 'regex',
+  };
+
+  expect('美股仙人（原名）仿冒被拦', matchesCustomImpersonation(rule, '美股仙人', 'leahberendse'), true);
+  expect('仙人美股（顺序调换）被拦', matchesCustomImpersonation(rule, '仙人美股', 'leahberendse'), true);
+  expect('美股仙入（人→入同形字）被拦', matchesCustomImpersonation(rule, '美股仙入', 'omer10927470'), true);
+  expect('真实账号 @hanking66 放行', matchesCustomImpersonation(rule, '美股仙人', 'hanking66'), false);
+  expect('无关昵称不误判', matchesCustomImpersonation(rule, '科技达人', 'someuser'), false);
 });
 
 // ── 汇总 ──────────────────────────────────────────────────────

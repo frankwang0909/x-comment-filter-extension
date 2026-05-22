@@ -6,7 +6,7 @@ const Storage = (() => {
   const DEFAULTS = {
     enabled: true,
     level: 'normal',          // 'loose' | 'normal' | 'strict'
-    hideMode: false,          // true = 直接隐藏，不显示占位条
+    hideMode: true,           // true = 直接隐藏，不显示占位条
     showReason: true,
     whitelist: [],            // username strings
     blacklist: [],            // username strings

@@ -4,7 +4,7 @@
   "version": "0.2.0",
   "description": "Automatically detect and collapse spam comments on X — adult bots, scam accounts, and impersonators.",
   "permissions": ["storage", "activeTab", "scripting"],
-  "host_permissions": ["https://x.com/*", "https://twitter.com/*"],
+  "host_permissions": ["https://x.com/*", "https://twitter.com/*", "https://api.twitter.com/*"],
   "content_scripts": [
     {
       "matches": ["https://x.com/*", "https://twitter.com/*"],

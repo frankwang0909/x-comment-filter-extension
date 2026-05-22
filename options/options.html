@@ -103,10 +103,10 @@
   </div>
 
   <h2>仿冒保护</h2>
-  <p style="font-size: 12px; color: #71767b; margin-bottom: 8px;">昵称包含指定名称但用户名不符时自动屏蔽</p>
+  <p style="font-size: 12px; color: #71767b; margin-bottom: 8px;">昵称包含指定名称但用户名不符时自动屏蔽。支持正则：以 / 开头和结尾，如 <code style="color:#e7e9ea">/(?=.*美)(?=.*股)(?=.*仙)(?=.*[人入])/</code></p>
   <div class="list-area">
     <div class="list-input-row" style="flex-wrap: wrap; gap: 6px;">
-      <input type="text" id="impersonation-name-input" placeholder="保护的昵称（如：硅谷居士）" style="flex:1; min-width: 140px;">
+      <input type="text" id="impersonation-name-input" placeholder="昵称或 /正则/（如：硅谷居士）" style="flex:1; min-width: 140px;">
       <input type="text" id="impersonation-user-input" placeholder="真实用户名（不含@）" style="flex:1; min-width: 120px;">
       <button class="btn-add" id="impersonation-add">添加</button>
     </div>

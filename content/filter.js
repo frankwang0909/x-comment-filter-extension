@@ -40,6 +40,14 @@ const Filter = (() => {
     // 白名单优先
     if (settings.whitelist.includes(info.username)) return;
 
+    // X 原生 "Probable spam" 标记直接折叠
+    if (hasNativeSpamLabel(article)) {
+      markHiddenUsername(info.username);
+      collapseArticle(article, info, { matched: true, reasons: ['X标记: Probable spam'] }, settings);
+      Storage.incrementStat('total');
+      return;
+    }
+
     // 黑名单直接强制折叠
     const forceCollapse = settings.blacklist.includes(info.username);
 
@@ -57,9 +65,12 @@ const Filter = (() => {
 
       // 用户自定义仿冒保护：同昵称不同用户名
       for (const rule of (settings.customImpersonation || [])) {
-        const nameMatches = rule.matchType === 'contains'
-          ? info.displayName.includes(rule.displayName)
-          : info.displayName === rule.displayName;
+        let nameMatches = false;
+        if (rule.matchType === 'regex') {
+          try { nameMatches = new RegExp(rule.pattern || rule.displayName).test(info.displayName); } catch (_) { /* 非法正则跳过 */ }
+        } else {
+          nameMatches = info.displayName.includes(rule.displayName);
+        }
         if (nameMatches && info.username !== rule.legitimateUsername) {
           markHiddenUsername(info.username);
           collapseArticle(article, info, { matched: true, reasons: [`仿冒保护: ${rule.displayName}`] }, settings);
@@ -146,6 +157,11 @@ const Filter = (() => {
       placeholder.remove();
     }
     article.remove();
+  }
+
+  function hasNativeSpamLabel(article) {
+    // X 会在疑似垃圾推文顶部渲染 "Probable spam" 文字标签
+    return article.innerText.includes('Probable spam');
   }
 
   function hasEnoughInfo(info) {
