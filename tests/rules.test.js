@@ -141,6 +141,20 @@ describe('单身哥哥正则修复', () => {
   expect('有没有单身男大', shouldFilter(scoreComment({ displayName:'x', username:'x', text:'有没有单身男大' })), true);
 });
 
+// ── 套件 6d：小狗求抱正文规则 ────────────────────────────────
+describe('小狗求抱正文规则', () => {
+  expect('post文字包含小狗求抱', shouldFilter(scoreComment({ displayName:'x', username:'x', text:'小狗求抱一下' })), true);
+});
+
+// ── 套件 6e：体制内老师正文规则 ──────────────────────────────
+describe('体制内老师正文规则', () => {
+  expect('post文字包含体制内老师 sao的很', shouldFilter(scoreComment({ displayName:'x', username:'x', text:'这个体制内老师 sao的很' })), true);
+  expect('post文字包含体制内老师骚的很', shouldFilter(scoreComment({ displayName:'x', username:'x', text:'体制内老师骚的很' })), true);
+  expect('post文字包含体制内老师騷的很', shouldFilter(scoreComment({ displayName:'x', username:'x', text:'体制内老师騷的很' })), true);
+  expect('post文字包含体制内老师搔的很', shouldFilter(scoreComment({ displayName:'x', username:'x', text:'体制内老师搔的很' })), true);
+  expect('post文字包含拆分的 s a o', shouldFilter(scoreComment({ displayName:'x', username:'x', text:'体制内老师 s a o 的很' })), true);
+});
+
 // ── 套件 6：仿冒检测 ─────────────────────────────────────────
 describe('仿冒检测', () => {
   expect('硅谷居士仿冒被拦', shouldFilter(scoreComment({ displayName:'硅硲居土', username:'CharleneMayo31', text:'我的分析结果' })), true);
