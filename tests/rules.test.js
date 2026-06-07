@@ -52,6 +52,7 @@ describe('强制命中关键词', () => {
     { displayName:'x', username:'x', text:'骚妇一枚' },
     { displayName:'x', username:'x', text:'免费线下看主页' },
     { displayName:'同城上门资源', username:'x', text:'' },
+    { displayName:'普通昵称', username:'strategyspam', text:'我的策略计划！👇' },
   ].forEach((s) => expect(`强制命中: "${s.displayName||s.text}"`, scoreComment(s).matched, true));
 });
 
@@ -62,10 +63,18 @@ describe('正常内容不触发（反误判）', () => {
     { displayName:'李四',   username:'lisi_dev',   text:'这个舞蹈真的很性感' },
     { displayName:'王五',   username:'wangwu2024', text:'这个人骚话真多' },
     { displayName:'科技博主', username:'techblog',  text:'AI 这波攻势真的很猛' },
+    { displayName:'线下上门维修', username:'repairservice', text:'预约维修服务' },
   ];
   normal.forEach((s) =>
     expect(`不折叠: "${s.text}"`, shouldFilter(scoreComment(s)), false)
   );
+});
+
+// ── 套件 3b：花朵线下上门昵称 ────────────────────────────────
+describe('花朵线下上门昵称', () => {
+  expect('异体字“丄门”且花朵在两侧', shouldFilter(scoreComment({ displayName:'🌸线下丄门🌸', username:'spam1', text:'' })), true);
+  expect('标准字“上门”且单个花朵', shouldFilter(scoreComment({ displayName:'线下上门🌺', username:'spam2', text:'' })), true);
+  expect('花朵在短语前', shouldFilter(scoreComment({ displayName:'🌼本地线下上门', username:'spam3', text:'' })), true);
 });
 
 // ── 套件 4：零宽字符绕过样本 ─────────────────────────────────
@@ -119,6 +128,7 @@ describe('擦边引流文案样本', () => {
     { displayName:'علياء🤎💫', username:'alih43',      text:'>她好涩💕我不行了👉 @2018D1 s' },
     { displayName:'诸葛初夏', username:'nvbobf',      text:'s比她好看的没她骚💋比她骚的没她好' },
     { displayName:'营采',   username:'ddubey',         text:'u&线下sao货没人比她sao @xiaonm88 \'' },
+    { displayName:'Liam Morson', username:'LiamMorson', text:'线下sao货没人比她sao @kekeya031 ❣️🚀' },
     { displayName:'习安志', username:'silas767',       text:'a比她好看的没她骚💟比她骚的没她好看 @danitinahd k' },
     { displayName:'习安志', username:'silas767',       text:'💞线下我就曰过💝这个骚货👉 @danitinahd 🔥' },
     { displayName:'诸葛初夏', username:'nvbobf',       text:'s推特🤤第一骚 @danitinahd ^' },
@@ -158,6 +168,7 @@ describe('体制内老师正文规则', () => {
 // ── 套件 6：仿冒检测 ─────────────────────────────────────────
 describe('仿冒检测', () => {
   expect('硅谷居士仿冒被拦', shouldFilter(scoreComment({ displayName:'硅硲居土', username:'CharleneMayo31', text:'我的分析结果' })), true);
+  expect('硅谷居士仿冒被拦（同形字顺序调换）', shouldFilter(scoreComment({ displayName:'硲硅居土', username:'BouchardsV', text:'我的策略计划！👇' })), true);
   expect('硅谷居士真实账号放行', shouldFilter(scoreComment({ displayName:'硅谷居士', username:'svscholar', text:'今天发了一篇文章' })), false);
   expect('陶瑞仿冒被拦', shouldFilter(scoreComment({ displayName:'陶瑞', username:'fakeuser123', text:'我的投资策略' })), true);
   expect('陶瑞真实账号放行', shouldFilter(scoreComment({ displayName:'陶瑞', username:'taoray', text:'分享一下最新想法' })), false);

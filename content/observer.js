@@ -41,6 +41,11 @@
         continue;
       }
 
+      // X 经常先渲染评论外壳，再把正文节点插入已有 article。
+      // 此时 addedNode 本身不是 article，必须重新处理 mutation.target 所在的评论。
+      const containingArticle = mutation.target.closest?.('article[data-testid="tweet"]');
+      if (containingArticle) maybeProcess(containingArticle);
+
       for (const node of mutation.addedNodes) {
         if (node.nodeType !== 1) continue;
         if (node.matches?.('article[data-testid="tweet"]')) {
@@ -68,7 +73,7 @@
 
   // Fix #1: 设置变更时立即对当前页生效
   // 清除所有已处理标记 + 移除占位条 + 恢复被折叠的 article + 重新扫描
-  chrome.storage.onChanged.addListener((changes) => {
+  globalThis.chrome?.storage?.onChanged?.addListener((changes) => {
     const relevant = ['enabled', 'level', 'whitelist', 'blacklist', 'showReason'];
     if (!relevant.some((k) => k in changes)) return;
 

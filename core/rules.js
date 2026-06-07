@@ -30,6 +30,7 @@ const RULES = {
 		'同城无偿',
 		'同城面付',
 		'免费配对',
+		'我的策略计划',
 		't.me/',
 		'telegram.me',
 	],
@@ -58,7 +59,10 @@ const RULES = {
 		{ re: /我不行了/, label: '色情模板' },
 		{ re: /我真顶不住/, label: '色情模板' },
 		{ re: /线下sao货/, label: '骚货模板' },
-		{ re: /体制内老师[\s\S]{0,3}(?:骚|騷|搔|臊|s\s*a\s*o)[\s\S]{0,2}的很/i, label: '色情模板' },
+		{
+			re: /体制内老师[\s\S]{0,3}(?:骚|騷|搔|臊|s\s*a\s*o)[\s\S]{0,2}的很/i,
+			label: '色情模板',
+		},
 		{ re: /线下我就[日曰]过/, label: '色情模板' },
 		{ re: /没人比她sao/, label: '色情模板' },
 		{ re: /sao货/i, label: '骚货模板' },
@@ -110,6 +114,10 @@ const RULES = {
 	// ── 昵称模式：正则匹配 displayName，命中即屏蔽 ──────────────
 	namePatterns: [
 		{ re: /[\u4e00-\u9fa5]{1,4}[\s\S]*(?:🌸|🌺|🌼|💮){2,}/, label: '花朵昵称' },
+		{
+			re: /(?=[\s\S]*(?:🌸|🌺|🌼|💮))[\s\S]*线下[上丄]门/,
+			label: '花朵线下上门昵称',
+		},
 		{ re: /找[\s\S]{0,3}炮[\s\S]{0,3}友/, label: '昵称导流词' },
 		{ re: /点[\s\S]{0,3}主[\s\S]{0,3}页/, label: '昵称导流词' },
 		{
@@ -142,13 +150,21 @@ const RULES = {
 	// pattern: 正则（处理同形字变体）
 	impersonationRules: [
 		{
-			pattern: /硅.居./,
+			pattern: /^(?=.{4,})(?=.*居)(?=.*[士土])(?=.*(?:谷|(?=.*硅)(?=.*硲)))/,
 			legitimateUsername: 'svscholar',
 			label: '硅谷居士仿冒',
 		},
 		{ pattern: /陶.?瑞/, legitimateUsername: 'taoray', label: '陶瑞仿冒' },
-		{ pattern: /(?:Tig[ir]+s|[TТ][iіıɪl1]g[iіıɪl1rг]+[sѕ5])/i, legitimateUsername: 'tig88411109', label: 'Tigris仿冒' },
-		{ pattern: /加[州洲]旅馆/, legitimateUsername: 'henghaer123', label: '加州旅馆仿冒' },
+		{
+			pattern: /(?:Tig[ir]+s|[TТ][iіıɪl1]g[iіıɪl1rг]+[sѕ5])/i,
+			legitimateUsername: 'tig88411109',
+			label: 'Tigris仿冒',
+		},
+		{
+			pattern: /加[州洲]旅馆/,
+			legitimateUsername: 'henghaer123',
+			label: '加州旅馆仿冒',
+		},
 	],
 };
 
@@ -170,7 +186,7 @@ function scoreComment({ displayName, username, text }) {
 	const haystack = `${nd} ${nu} ${nt}`.toLowerCase();
 
 	// 仿冒规则保护的合法账号直接放行，不经过任何检测
-	if (RULES.impersonationRules.some(r => nu === r.legitimateUsername)) {
+	if (RULES.impersonationRules.some((r) => nu === r.legitimateUsername)) {
 		return { matched: false, reasons: [] };
 	}
 

@@ -17,8 +17,14 @@ const Storage = (() => {
 
   async function get(keys = null) {
     return new Promise((resolve) => {
+      const storageArea = getStorageArea();
+      if (!storageArea) {
+        resolve({ ...DEFAULTS });
+        return;
+      }
+
       safeStorageCall(
-        () => chrome.storage.local.get(keys ?? Object.keys(DEFAULTS), (result) => {
+        () => storageArea.get(keys ?? Object.keys(DEFAULTS), (result) => {
           if (hasRuntimeError()) {
             resolve({ ...DEFAULTS });
             return;
@@ -32,8 +38,14 @@ const Storage = (() => {
 
   async function set(data) {
     return new Promise((resolve) => {
+      const storageArea = getStorageArea();
+      if (!storageArea) {
+        resolve();
+        return;
+      }
+
       safeStorageCall(
-        () => chrome.storage.local.set(data, () => {
+        () => storageArea.set(data, () => {
           resolve();
         }),
         () => resolve()
@@ -89,7 +101,7 @@ const Storage = (() => {
     try {
       run();
     } catch (error) {
-      if (isContextInvalidated(error)) {
+      if (!getStorageArea() || isContextInvalidated(error)) {
         fallback();
         return;
       }
@@ -101,8 +113,20 @@ const Storage = (() => {
     return /Extension context invalidated/i.test(error?.message || '');
   }
 
+  function getStorageArea() {
+    try {
+      return globalThis.chrome?.storage?.local ?? null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   function hasRuntimeError() {
-    return Boolean(chrome.runtime?.lastError);
+    try {
+      return Boolean(globalThis.chrome?.runtime?.lastError);
+    } catch (_) {
+      return true;
+    }
   }
 
   return { get, set, getSettings, incrementStat, addToList, removeFromList };
